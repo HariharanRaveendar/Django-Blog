@@ -1,0 +1,244 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block main_body %}
+<div class="container-scroller">
+   {% include 'adminnavs.html' %}
+   <div class="main-panel">
+      <div class="content-wrapper">
+         <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title d-flex justify-content-center">ADD ARTICLE</h4>
+                  <form class="forms-sample"action="{% url 'updatearticle' article.id path %}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                  {% csrf_token %}
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi-format-list-bulleted text-white"></i>
+                              </span>
+                           </div>
+                           <select class="form-control text-white"id="Category" name="category">
+                              {% for s in category %}
+                              {% if s.CategoryName == article.CategoryName.CategoryName %}
+                              <option selected  value={{s.id}}>{{s.CategoryName}}</option>
+                              {% else %}
+                              <option  value={{s.id}}>{{s.CategoryName}}</option>
+                              {% endif %}
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi-format-list-bulleted text-white"></i>
+                              </span>
+                           </div>
+                           <select class="form-control text-white" id="subcategory" name="subcategory">
+                              {% for s in subcategory %}
+                              {% if s.SubCategoryName == article.SubCategoryName.SubCategoryName %}
+                              <option selected value={{s.id}}>{{s.SubCategoryName}}</option>
+                              {% else %}
+                              <option value={{s.id}}>{{s.SubCategoryName}}</option>
+                              {% endif %}
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi-format-list-bulleted text-white"></i>
+                              </span>
+                           </div>
+                           <select class="form-control text-white" id="user" name="user">
+                              {% for s in user %}
+                              {% if s.is_superuser %}
+                              {% if s.username == article.user.username %}
+                                <option selected value={{s.id}}>{{s.first_name}}</option>
+                               {% else %}
+                               <option value={{s.id}}>{{s.first_name}}</option>
+                              {% endif %}
+                              {% endif %}
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi mdi-hospital-building text-white"></i>
+                              </span>
+                           </div>
+                           <input type="text" class="form-control text-white" name="title"
+                               placeholder="Add Title" value="{{article.Title}}">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi mdi-hospital-building text-white"></i>
+                              </span>
+                           </div>
+                           <div class="custom-file" >
+                              <input type="file" class="custom-file-input " name="img" accept="image/*" id="label"  >
+                              <label class="custom-file-label " style="background-color: rgba(255, 255, 255, .3); color:#fff" for="label">Choose file</label>
+                           </div>
+                           {% if article.Img.url is not None %}
+                            <div class="input-group-postend mt-1">
+                            <button type="button" class="btn btn-primary" onclick="imagepreview()">Old Image</button>
+                          </div>
+                        {% endif %}
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi mdi-hospital-building text-white"></i>
+                              </span>
+                           </div>
+                           <input type="text" class="form-control text-white"  name="subtitle" value="{{article.SubTitle}}"
+                              placeholder="Add Sub Title">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi-table-edit text-white"></i>
+                              </span>
+                           </div>
+                           <textarea class="form-control"  placeholder="Subject"  name="subject" rows="5" style="color: white;" aria-label="With textarea">
+                           {{article.Subject}}
+                           </textarea>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend ">
+                              <span class="input-group-text"><i class="mdi mdi mdi-hospital-building text-white"></i></span>
+                           </div>
+                           <textarea id="bodycontent"  name="bodycontent">
+                           {{article.Body}}
+                           </textarea>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi mdi-hospital-building text-white"></i>
+                              </span>
+                           </div>
+                           <div class="custom-file" >
+                              <input type="file" class="custom-file-input " accept="application/pdf" name="docs" id="label">
+                              <label class="custom-file-label " style="background-color: rgba(255, 255, 255, .3); color:#fff" for="label">Choose file</label>
+                           </div>
+                         {% if article.File.url is not None %}
+                        <div class="input-group-postend mt-0">
+                            <a href="{{article.File.url}}" target="_blank" class="btn btn-primary" >Old Doc</a>
+                        </div>
+                        {% endif %}
+                        </div>
+                     </div>
+                     <button type="submit" class="btn btn-outline-success float-right">ADD</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% if article.Img.url is not None %}
+<div class="modal fade" id="image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-primary" role="document">
+      <div class="modal-content">
+         <div class="modal-body mx-3">
+               <img src="{{article.Img.url}}" class="img-fluid ml-5" style="height: 275px; width: 320px;" alt="">
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">OK</button>
+               </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endif %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script>
+   CKEDITOR.replace('bodycontent', {
+       'skin': 'moono',
+        'toolbar': [
+        {
+          name: 'basicstyles',
+          items: ['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat', 'Subscript', 'Superscript']
+        },
+        {
+          name: 'links',
+          items: ['Link', 'Unlink']
+        },
+        {
+          name: 'paragraph',
+          items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote']
+        },
+        {
+          name: 'insert',
+          items: ['Image', 'Table']
+        },
+        {
+          name: 'editing',
+          items: ['Maximize']
+        },
+
+        {
+          name: 'styles',
+          items: ['Format', 'Font', 'FontSize','Styles']
+        },
+        {
+          name: 'colors',
+          items: ['TextColor', 'BGColor', 'CopyFormatting']
+        },
+        {
+          name: 'align',
+          items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+        },
+        {
+          name: 'document',
+          items: ['PageBreak', ]
+        },
+        {
+            name:'Maths',
+            items:['Mathjax']
+
+        },
+        {
+          name: 'various',
+          items: [ 'Undo', 'Redo']
+        },
+        {
+          name: 'media',
+          items: [ 'Embed','Find','Replace','Smiley','SpecialChar']
+        },
+        {
+          name: 'file',
+          items: ['Print','NewPage','Templates','Scayt']
+        },
+      ],
+       'width': 1100,
+       'height': 150,
+       'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
+       'extraPlugins':['mathjax','embed','autoembed','image2', ],
+       'embed_provider': '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}',
+   });
+      function imagepreview(){
+       $('#image').modal("toggle");
+   }
+
+</script>
+{% endblock main_body %}

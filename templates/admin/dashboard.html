@@ -1,0 +1,59 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block main_body %}
+<div class="container-scroller">
+   {% include 'adminnavs.html' %}
+   <div class="main-panel">
+      <div class="content-wrapper">
+         <div class="row">
+            <div class="col-sm-4 grid-margin">
+               <div class="card">
+                  <div class="card-body">
+                     <h5 class="text-uppercase">Category</h5>
+                     <div class="row">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto ">
+                           <a href="{% url 'category' %}" type="button" class="btn btn-light btn-lg btn-rounded btn-fw text-uppercase ">Add Category</a>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                           <i class="icon-lg mdi mdi-format-list-bulleted text-primary ml-auto"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-4 grid-margin">
+               <div class="card">
+                  <div class="card-body">
+                     <h5 class="text-uppercase">Sub Category</h5>
+                     <div class="row">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                           <a href="{% url 'subcategory' %}" class="btn btn-light btn-lg btn-rounded btn-fw text-uppercase ">Add sub Category</a>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                           <i class="icon-lg mdi mdi-hospital-building text-primary ml-auto"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-4 grid-margin">
+               <div class="card">
+                  <div class="card-body">
+                     <h5 class="text-uppercase">Article</h5>
+                     <div class="row">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                           <a href="{% url 'article' %}" class="btn btn-light btn-lg btn-rounded btn-fw text-uppercase ml-2 ">Add Article</a>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                           <i class="icon-lg mdi mdi-book-multiple text-primary ml-auto"></i>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+</div>
+{% endblock main_body %}

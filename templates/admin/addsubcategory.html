@@ -1,0 +1,347 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block main_body %}
+<div class="container-scroller">
+   {% include 'adminnavs.html' %}
+   <div class="main-panel">
+      <div class="content-wrapper">
+         <div class="row d-flex justify-content-center mt-5">
+            <div class="col-md-6 grid-margin stretch-card ">
+               <div class="card">
+                  <div class="card-body">
+                     <h4 class="card-title text-center text-uppercase">Add Category</h4>
+                     <form class="forms-sample" action="{% url 'addsubcategory' %}" method="post"
+                        autocomplete="off">
+                        {% csrf_token %}
+                        <div class="form-group">
+                           <div class="input-group">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text">
+                                 <i class="mdi mdi-format-list-bulleted text-white"></i>
+                                 </span>
+                              </div>
+                              <select class="form-control text-white" name="category" id="category">
+                                 <option selected>Select Category</option>
+                                 {% for s in category %}
+                                 <option value={{s.id}}>{{s.CategoryName}}</option>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="input-group">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text">
+                                 <i class="mdi mdi mdi-hospital-building text-white"></i>
+                                 </span>
+                              </div>
+                              <input type="text" class="form-control text-white" name="subcategory"
+                                 placeholder="ADD SUB CATEGORY">
+                           </div>
+                        </div>
+                        <div class="input-group">
+                           <div class="input-group-prepend">
+                              <span class="input-group-text">
+                              <i class="mdi mdi-table-edit text-white"></i>
+                              </span>
+                           </div>
+                           <textarea class="form-control" name="subdesc" rows="5" style="color: white;"
+                              placeholder="Sub Category Description" aria-label="With textarea"></textarea>
+                        </div>
+                        <button type="submit"
+                           class="btn btn-outline-success btn-sm mr-2 mt-2 float-right">ADD</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="row mt-5">
+            <div class="col-lg-12 stretch-card grid-margin">
+               <div class="card">
+                  <div class="card-body">
+                     <h4 class="card-title">Category</h4>
+                     <div class="table-responsive table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table table-hover">
+                           <thead class="text-center text-uppercase">
+                              <tr>
+                                 <th>ID</th>
+                                 <th>Category Name</th>
+                                 <th>Update</th>
+                                 <th>Delete</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% for s in subcategory%}
+                              <tr class="text-center  text-white" id="s{{s.id}}">
+                                 <th scope="row">{{s.id}}</th>
+                                 <td id="sc{{s.id}}">{{s.SubCategoryName}}</td>
+                                 <td><a href="#" class="btn btn-outline-primary btn-sm"
+                                    onclick="updatesubcategory({{s.id}})">Update</a></td>
+                                 <td><a href="#" class="btn btn-outline-danger btn-sm"
+                                    onclick="deletesubcategory({{s.id}})">Delete</a></td>
+                              </tr>
+                              {% endfor %}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="updatesubcategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-danger" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title heading lead text-uppercase" id="exampleModalLabel">Add Sub Category</h5>
+            <button type="button" class="close white-text" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body mx-3">
+            <div class="form-group">
+               <div class="input-group">
+                  <div class="input-group-prepend">
+                     <span class="input-group-text">
+                     <i class="mdi mdi-format-list-bulleted text-white"></i>
+                     </span>
+                  </div>
+                  <select class="form-control text-white" id="fkcategory" name="category"></select>
+                  </select>
+               </div>
+            </div>
+            <div class="input-group mb-3">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">
+                  <i class="mdi mdi mdi-hospital-building text-white"></i>
+                  </span>
+               </div>
+               <input type="text" class="form-control" name="subcategory" id="subcategory" maxlength="100"
+                  placeholder="ADD SUB CATEGORY" aria-label="subcategory" aria-describedby="subcategory">
+            </div>
+            <div class="input-group">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">
+                  <i class="mdi mdi-table-edit text-white"></i>
+                  </span>
+               </div>
+               <textarea class="form-control" name="subdesc" id="subdesc"  placeholder="Sub Category Description"
+                  aria-label="With textarea"></textarea>
+            </div>
+            <div id="suberr"></div>
+            <div class="modal-footer" id="subdoc">
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="updsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-primary" role="document">
+      <div class="modal-content">
+         <div class="modal-body mx-3">
+            <h3 class="text-uppercase text-white">Update Successfully </h3>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">OK</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="deletesubcategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-danger" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title heading lead text-uppercase" id="exampleModalLabel">Delete Sub Category</h5>
+            <button type="button" class="close white-text" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body mx-3">
+            <div class="form-group">
+               <div class="input-group">
+                  <div class="input-group-prepend">
+                     <span class="input-group-text">
+                        <i class="mdi mdi-format-list-bulleted text-white"></i>
+                     </span>
+                  </div>
+                  <select class="form-control text-white bg-dark" id="dcategory" name="category" disabled></select>
+                  </select>
+               </div>
+            </div>
+            <div class="input-group mb-3">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">
+                     <i class="mdi mdi mdi-hospital-building text-white"></i>
+                  </span>
+               </div>
+               <input type="text" class="form-control bg-dark " name="subcategory" id="dsubcategory" maxlength="100"
+                  placeholder="ADD SUB CATEGORY" aria-label="subcategory" aria-describedby="subcategory" disabled>
+            </div>
+            <div class="input-group">
+               <div class="input-group-prepend">
+                  <span class="input-group-text">
+                     <i class="mdi mdi-table-edit text-white"></i>
+                  </span>
+               </div>
+               <textarea class="form-control bg-dark" name="subdesc" id="dsubdesc" style="color: white;"
+                  placeholder="Sub Category Description" aria-label="With textarea" disabled></textarea>
+            </div>
+            <div class="modal-footer" id="deldoc">
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="delsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-primary" role="document">
+      <div class="modal-content">
+         <div class="modal-body mx-3">
+            <h3 class="text-uppercase text-white">Deleted Successfully </h3>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">OK</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function updatesubcategory(id) {
+       const replay = new XMLHttpRequest();
+   
+       replay.onload = function () {
+           let responseValue = null;
+   
+           try {
+               responseValue = JSON.parse(replay.responseText);
+           } catch (e) {
+               console.log("Could not parse json");
+           }
+           if (responseValue) {
+               console.log(responseValue);
+               let html = '';
+               for (i = 0; i < responseValue.cat.length; i++) {
+                   if (responseValue.cname == responseValue.cat[i]) {
+                       html += `<option selected value=${responseValue.cat[i]}>${responseValue.cat[i]}</option>`
+                   }
+                   else {
+                       html += `<option value=${responseValue.cat[i]}>${responseValue.cat[i]}</option>`
+                   }
+               }
+               document.getElementById('fkcategory').innerHTML = html;
+               document.getElementById('subdesc').value = responseValue.sdesc;
+               document.getElementById('subcategory').value = responseValue.sname;
+               document.getElementById('subdoc').innerHTML = `<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        <button type="button" onclick="updatesubcategorydb(${responseValue.id})" class="btn btn-success">ADD</button>`
+               $('#updatesubcategory').modal("toggle")
+           }
+       }
+       let body = new FormData();
+       body.append("subcategory", JSON.stringify(1));
+   
+       replay.open("POST", `../updatesubcategory/${id}/`);
+       replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+       replay.send(body);
+   }
+   function updatesubcategorydb(id) {
+       const replay = new XMLHttpRequest();
+   
+       replay.onload = function () {
+           let responseValue = null;
+   
+           try {
+               responseValue = JSON.parse(replay.responseText);
+           } catch (e) {
+               console.log("Could not parse json");
+   
+           }
+           if (responseValue) {
+               console.log(responseValue)
+               if (responseValue.err) {
+                   document.getElementById('suberr').innerHTML = `<h3 class="text-danger text-center text-uppercase">${responseValue.err}</h3>`
+               } else {
+                   document.getElementById(`sc${responseValue.id}`).innerHTML = responseValue.sname;
+                   $('#updatesubcategory').modal("toggle");
+                   $('#updsuccess').modal("toggle");
+               }
+           }
+       }
+       let body = new FormData();
+       body.append('subcategory', JSON.stringify(0));
+       body.append('updsubcategory', JSON.stringify(1));
+       body.append('cname', JSON.stringify(document.getElementById('fkcategory').value));
+       body.append('sname', JSON.stringify(document.getElementById('subcategory').value));
+       body.append('sdesc', JSON.stringify(document.getElementById('subdesc').value));
+   
+       replay.open("POST", `../updatesubcategory/${id}/`);
+       replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+       replay.send(body);
+   }
+   function deletesubcategory(id) {
+      const replay = new XMLHttpRequest();
+
+      replay.onload = function () {
+         let responseValue = null;
+
+         try {
+            responseValue = JSON.parse(replay.responseText);
+         } catch (e) {
+            console.log("Could not parse json");
+         }
+         if (responseValue) {
+            console.log(responseValue);
+            let html = '';
+            for (i = 0; i < responseValue.cat.length; i++) {
+               if (responseValue.cname == responseValue.cat[i]) {
+                  html += `<option selected value=${responseValue.cat[i]}>${responseValue.cat[i]}</option>`
+               }
+               else {
+                  html += `<option value=${responseValue.cat[i]}>${responseValue.cat[i]}</option>`
+               }
+            }
+            document.getElementById('dcategory').innerHTML = html;
+            document.getElementById('dsubdesc').value = responseValue.sdesc;
+            document.getElementById('dsubcategory').value = responseValue.sname;
+            document.getElementById('deldoc').innerHTML = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                          <button type="button" onclick="deletesubcategorydb(${responseValue.id})" class="btn btn-danger">Confrim</button>`
+            $('#deletesubcategory').modal("toggle")
+         }
+      }
+      let body = new FormData();
+      body.append("sdelete", JSON.stringify(1));
+      replay.open("POST", `../deletesubcategory/${id}/`);
+      replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      replay.send(body);
+   }
+   function deletesubcategorydb(id) {
+      const replay = new XMLHttpRequest();
+
+      replay.onload = function () {
+         let responseValue = null;
+
+         try {
+            responseValue = JSON.parse(replay.responseText);
+         } catch (e) {
+            console.log("Could not parse json");
+
+         }
+         if (responseValue) {
+            console.log(responseValue)
+            document.getElementById(`s${responseValue.id}`).innerHTML = null;
+            $('#deletesubcategory').modal("toggle");
+            $('#delsuccess').modal("toggle");
+         }
+      }
+      let body = new FormData();
+      body.append('sdelete', JSON.stringify(0));
+      body.append('sdeletedb', JSON.stringify(1));
+      replay.open("POST", `../deletesubcategory/${id}/`);
+      replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      replay.send(body);
+   }
+
+</script>
+{% endblock main_body %}

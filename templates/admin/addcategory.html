@@ -1,0 +1,262 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block main_body %}
+<div class="container-scroller">
+{% include 'adminnavs.html' %}
+<div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row d-flex justify-content-center mt-5">
+              <div class="col-md-6 grid-margin stretch-card ">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title text-center text-uppercase">Add Category</h4>
+                    <form class="forms-sample" action="{% url 'addcategory' %}" method="post" autocomplete="off">
+                        {% csrf_token %}
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                          <i class="mdi mdi-format-list-bulleted text-white"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control text-white" name="category" placeholder="ADD CATEGORY">
+                      </div>
+                    </div>
+                      <button type="submit" class="btn btn-outline-success btn-sm mr-2 float-right">ADD</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+          </div>
+        <div class="row mt-5">
+            <div class="col-lg-12 stretch-card grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Category</h4>
+                        <div class="table-responsive table-wrapper-scroll-y my-custom-scrollbar">
+                            <table class="table table-hover">
+                                <thead class="text-center text-uppercase">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Category Name</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                           <tbody>
+                              {% for c in category%}
+                              <tr class="text-center text-white" id="c{{c.id}}">
+                                 <td scope="row">{{c.id}}</td>
+                                 <td id="c{{c.id}}">{{c.CategoryName}}</td>
+                                 <td><a href="#" class="btn btn-outline-primary btn-sm"
+                                       onclick="updatecategory({{c.id}})">Update</a></td>
+                                 <td><a href="#" class="btn btn-outline-danger btn-sm"
+                                       onclick="deletecategory({{c.id}})">Delete</a></td>
+                              </tr>
+                              {% endfor %}
+                           </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+<div class="modal fade" id="updatecategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title heading lead text-uppercase" id="exampleModalLabel">Update Category</h5>
+                <button type="button" class="close white-text" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="category">
+                            <i class="mdi mdi-format-list-bulleted text-white"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control text-white" name="category" id="cat" maxlength="100"
+                        placeholder="Update CATEGORY" aria-label="category" aria-describedby="category">
+                </div>
+                <div id="err"></div>
+                <div id="doc" class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="updsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-body mx-3">
+                <h3 class="text-uppercase text-white">Update Successfully </h3>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deletecategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-primary" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title heading lead text-uppercase" id="exampleModalLabel">Delete Category</h5>
+            <button type="button" class="close white-text" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body mx-3">
+            <div class="input-group mb-3">
+               <div class="input-group-prepend">
+                  <span class="input-group-text" id="category">
+                     <i class="mdi mdi-format-list-bulleted text-white"></i>
+                  </span>
+               </div>
+               <input type="text" class="form-control text-black bg-dark" name="category" id="dcat" maxlength="100"
+                  placeholder="Update CATEGORY" aria-label="category" aria-describedby="category" disabled>
+            </div>
+            <div id="del" class="modal-footer">
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="delsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-notify modal-primary" role="document">
+      <div class="modal-content">
+         <div class="modal-body mx-3">
+            <h3 class="text-uppercase text-white">Deleted Successfully </h3>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">OK</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+    function updatecategory(id) {
+
+        const replay = new XMLHttpRequest();
+
+        replay.onload = function () {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+            }
+            if (responseValue) {
+                console.log(responseValue)
+                $('#updatecategory').modal("toggle")
+                $('#cat').val(responseValue.cname)
+                document.getElementById('doc').innerHTML = `<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                           <button type="button" onclick="updatecategorydb(${responseValue.id})" class="btn btn-success">ADD</button>`
+            }
+        }
+        let body = new FormData();
+        body.append('category', JSON.stringify(1));
+
+        replay.open("POST", `../updatecategory/${id}/`);
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    }
+
+    function updatecategorydb(id) {
+
+        const replay = new XMLHttpRequest();
+
+        replay.onload = function () {
+            let responseValue = null;
+
+            try {
+                responseValue = JSON.parse(replay.responseText);
+            } catch (e) {
+                console.log("Could not parse json");
+
+            }
+            if (responseValue) {
+                console.log(responseValue)
+                if (responseValue.err) {
+                    document.getElementById('err').innerHTML = `<h3 class="text-danger text-center text-uppercase">${responseValue.err}</h3>`
+                } else {
+                    document.getElementById(`c${responseValue.id}`).innerHTML = responseValue.cname;
+                    $('#updatecategory').modal("toggle");
+                    $('#updsuccess').modal("toggle");
+
+                }
+            }
+        }
+        let body = new FormData();
+        body.append('category', JSON.stringify(0));
+        body.append('updcategory', JSON.stringify(1));
+        body.append('cname', JSON.stringify(document.getElementById('cat').value));
+        replay.open("POST", `../updatecategory/${id}/`);
+        replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        replay.send(body);
+    }
+
+   function deletecategory(id) {
+
+      const replay = new XMLHttpRequest();
+
+      replay.onload = function () {
+         let responseValue = null;
+
+         try {
+            responseValue = JSON.parse(replay.responseText);
+         } catch (e) {
+            console.log("Could not parse json");
+         }
+         if (responseValue) {
+            console.log(responseValue)
+            $('#deletecategory').modal("toggle")
+            $('#dcat').val(responseValue.cname)
+            document.getElementById('del').innerHTML = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                           <button type="button" onclick="deletecategorydb(${responseValue.id})" class="btn btn-danger">Confrim</button>`
+         }
+      }
+      let body = new FormData();
+      body.append('cdelete', JSON.stringify(1));
+      replay.open("POST", `../deletecategory/${id}/`);
+      replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      replay.send(body);
+   }
+   function deletecategorydb(id) {
+      const replay = new XMLHttpRequest();
+
+      replay.onload = function () {
+         let responseValue = null;
+
+         try {
+            responseValue = JSON.parse(replay.responseText);
+         } catch (e) {
+            console.log("Could not parse json");
+
+         }
+         if (responseValue) {
+            console.log(responseValue)
+            document.getElementById(`c${responseValue.id}`).innerHTML = null;
+            $('#deletecategory').modal("toggle");
+            $('#delsuccess').modal("toggle");
+         }
+      }
+      let body = new FormData();
+      body.append('cdelete', JSON.stringify(0));
+      body.append('cdeletedb', JSON.stringify(1));
+      replay.open("POST", `../deletecategory/${id}/`);
+      replay.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+      replay.send(body);
+
+   }
+
+</script>
+{% endblock main_body %}
